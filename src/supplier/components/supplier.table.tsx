@@ -1,7 +1,6 @@
-import { Table, Breadcrumb } from 'antd';
+import { Table, Breadcrumb, Col, Row } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
 import { Supplier } from '../supplier';
 //import api from '../../services/api'
 
@@ -73,7 +72,7 @@ export default function ProductsTable(props: any) {
             <Breadcrumb style={{ margin: '16px 0' }}>
 				<Breadcrumb.Item>Suppliers</Breadcrumb.Item>
 			</Breadcrumb>
-			<Col lg={12}>
+			<Col span={24}>
 				<Table rowSelection={rowSelection} columns={columns} dataSource={data} />
 			</Col>
 		</Row>

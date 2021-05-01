@@ -9,6 +9,8 @@ import './App.css';
 import Home from './home/components/home';
 import './index.css';
 import ProductTable from './product/components/product.table';
+import ProductNew from './product/container/product.new';
+import ProductEdit from './product/container/product.edit';
 import SupplierTable from './supplier/components/supplier.table';
 const { Header, Content, Sider } = Layout;
 
@@ -41,8 +43,10 @@ export default function App() {
             <Header className="site-layout-background" style={{ padding: 0 }} />
             <Content style={{ margin: '0 16px' }}>
               <Route path="/" exact component={Home} />
-              <Route path="/products" component={ProductTable} />
-              <Route path="/suppliers" component={SupplierTable} />
+              <Route path="/products" exact component={ProductTable} />
+              <Route path="/products/new" exact component={ProductNew} />
+              <Route path="/products/edit/:id" exact component={ProductEdit} />
+              <Route path="/suppliers" exact component={SupplierTable} />
             </Content>
           </Layout>
         </Layout>

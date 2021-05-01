@@ -1,9 +1,10 @@
-import { Table, Breadcrumb } from 'antd';
+import { Breadcrumb, Col, Popconfirm, Row, Table, Space } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Link } from "react-router-dom";
 import { Product } from '../product';
 import ProductDescription from './product.description';
+import { PlusOutlined } from '@ant-design/icons';
 //import api from '../../services/api'
 
 export default function ProductsTable(props: any) {
@@ -43,18 +44,41 @@ export default function ProductsTable(props: any) {
 		setSelectedRowKeys(selectedRowKeys);
 	};
 
+	const handleDelete = (productId: number) => {
+		console.log("deleting product", productId);
+	}
+
 	const columns: ColumnsType<Product> = [
 		{
 			key: 'id',
 			title: 'Id',
 			dataIndex: 'id',
+			width: '10%',
 			defaultSortOrder: 'ascend',
 			sorter: (a, b) => a.id - b.id,
 		},
 		{
 			key: 'name',
 			title: 'Product',
+			width: '80%',
 			dataIndex: 'name',
+		},
+		{
+			key: 'Actions',
+			title: 'Product',
+			width: '10%',
+			fixed: 'right',
+			render: (_, record) => {
+				const link = `/products/edit/${record.id}`;
+				return (
+					<div>
+						<Link to={link}>Edit</Link>
+						<Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+							<a>Delete</a>
+						</Popconfirm>
+					</div>
+				);
+			},
 		},
 	];
 
@@ -73,13 +97,24 @@ export default function ProductsTable(props: any) {
 	}
 
 	return (
-		<Row>
-			<Breadcrumb style={{ margin: '16px 0' }}>
-				<Breadcrumb.Item>Products</Breadcrumb.Item>
-			</Breadcrumb>
-			<Col lg={12}>
-				<Table rowSelection={rowSelection} expandable={{ expandedRowRender }} columns={columns} dataSource={data} />
-			</Col>
-		</Row>
+		<>
+			<Row>
+				<Breadcrumb style={{ margin: '16px 0' }}>
+					<Breadcrumb.Item>Products</Breadcrumb.Item>
+				</Breadcrumb>
+			</Row>
+			<Row justify="end">
+				<Col span={4}>
+					<Space align="end">
+						<Link to="/products/new">New</Link>
+					</Space>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={24}>
+					<Table rowSelection={rowSelection} expandable={{ expandedRowRender }} columns={columns} dataSource={data} />
+				</Col>
+			</Row>
+		</>
 	);
 }
