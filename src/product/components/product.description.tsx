@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Product } from '../product';
 
 export default function ProductDescription(props: any) {
-    const [product, setProduct] = useState<Product>({ id: 0, name: '', key: 0 });
+    const [product, setProduct] = useState<Product>({ productId: 0, name: '', key: 0, pricePerUnit: 0 });
 
     useEffect(() => {
         setProduct(props.product);
@@ -11,7 +11,7 @@ export default function ProductDescription(props: any) {
 
     return (
         <Descriptions title="Product Info" column={12}>
-            <Descriptions.Item label="Product Code" span={3}>{product.id}</Descriptions.Item>
+            <Descriptions.Item label="Product Code" span={3}>{product.productId}</Descriptions.Item>
             <Descriptions.Item label="Name" span={9}>{product.name}</Descriptions.Item>
             <Descriptions.Item label="Description" span={12}>{product.description}</Descriptions.Item>
         </Descriptions>

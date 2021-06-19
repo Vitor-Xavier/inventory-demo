@@ -1,26 +1,18 @@
-import { Form, Input, InputNumber, Button, Row, Col } from 'antd';
+import { Button, Col, Form, Input, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Product } from '../product';
-import ProductDescription from './product.description';
 
 const { TextArea } = Input;
 
 export default function ProductForm(props: any) {
-	const [product, setProduct] = useState<Product>({ id: 0, name: '', key: 0, description: '' });
+	const [product, setProduct] = useState<Product>({ productId: 0, name: '', key: 0, description: '', pricePerUnit: 0 });
 
 	useEffect(() => {
-		if (props.productId) setProduct(props.product);
-	}, [props.productId]);
+		if (props.product) setProduct(props.product);
+	}, [props.product]);
 
 	return (
-		<Form layout="vertical" onFinish={props.onFinish}>
-			<Row gutter={8}>
-				<Col span={24}>
-					<Form.Item label="Id">
-						<InputNumber value={product.id} disabled={props.disableInputs} onChange={(value) => setProduct({ ...product, id: value })} />
-					</Form.Item>
-				</Col>
-			</Row>
+		<Form layout="vertical" onFinish={() => props.onFinish(product)}>
 			<Row gutter={8}>
 				<Col span={24}>
 					<Form.Item label="Name">

@@ -1,14 +1,26 @@
 import { Breadcrumb, Row, message } from 'antd';
-import React from 'react';
 import ProductForm from '../components/product.form';
 import { Product } from '../product';
-import { useHistory } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useHistory, useParams } from "react-router-dom";
+import productService from '../services/product.service';
 
 export default function ProductEdit(props: any) {
+    const [product, setProduct] = useState<Product>({ productId: 0, key: 0, name: '', pricePerUnit: 0 });
     const history = useHistory();
+    const { id } = useParams<{ id: string }>();
 
-	const onFinish = (product: Product) => {
-		console.log('Edited product: ', product);
+    useEffect(() => {
+		const fetchData = async () => {
+			const response = await productService.get(parseInt(id));
+			setProduct(response.data);
+		};
+
+		fetchData();
+	}, [id]);
+
+	const onFinish = async (product: Product) => {
+        await productService.update(parseInt(id), product);
         message.success('Product edited');
         history.push("/products");
 	};
@@ -25,7 +37,7 @@ export default function ProductEdit(props: any) {
                     <Breadcrumb.Item>Edit</Breadcrumb.Item>
                 </Breadcrumb>
             </Row>
-            <ProductForm onFinish={onFinish} handleCancel={handleCancel} />
+            <ProductForm product={product} onFinish={onFinish} handleCancel={handleCancel} />
         </>
     );
 }

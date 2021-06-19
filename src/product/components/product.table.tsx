@@ -1,61 +1,46 @@
-import { Breadcrumb, Col, Popconfirm, Row, Table, Space } from 'antd';
+import { Breadcrumb, Col, Popconfirm, Row, Space, Table, message } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import { Product } from '../product';
+import productService from '../services/product.service';
 import ProductDescription from './product.description';
-import { PlusOutlined } from '@ant-design/icons';
-//import api from '../../services/api'
 
 export default function ProductsTable(props: any) {
 	const [data, setData] = useState<Product[]>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
 
 	useEffect(() => {
-
-		// api.get("users/tgmarinho")
-		// 	.then((response) => setData(response.data))
-		// 	.catch((err) => {
-		// 		console.error("ops! ocorreu um erro" + err);
-		// 	});
-
-		setData([{
-			key: 1,
-			id: 1,
-			name: 'Teste 1',
-			description: 'descrição teste do produto'
-		},
-		{
-			key: 2,
-			id: 2,
-			name: 'Teste 2',
-			description: 'descrição teste do produto'
-		},
-		{
-			key: 3,
-			id: 3,
-			name: 'Teste 3',
-			description: 'descrição teste do produto'
-		}]);
-
+		fetchData();
 	}, []);
+
+	const fetchData = async () => {
+		const response = await productService.getProducts();
+		const products = response.data;
+		products.forEach((s: Product, i: number) => {
+			s.key = i;
+		});
+		setData(products);
+	};
 
 	const onSelectChange = (selectedRowKeys: any[]) => {
 		setSelectedRowKeys(selectedRowKeys);
 	};
 
-	const handleDelete = (productId: number) => {
-		console.log("deleting product", productId);
+	const handleDelete = async (supplierId: number) => {
+		await productService.delete(supplierId);
+        message.success('Product deleted');
+		await fetchData();
 	}
 
 	const columns: ColumnsType<Product> = [
 		{
 			key: 'id',
 			title: 'Id',
-			dataIndex: 'id',
+			dataIndex: 'productId',
 			width: '10%',
 			defaultSortOrder: 'ascend',
-			sorter: (a, b) => a.id - b.id,
+			sorter: (a, b) => a.productId - b.productId,
 		},
 		{
 			key: 'name',
@@ -69,11 +54,11 @@ export default function ProductsTable(props: any) {
 			width: '10%',
 			fixed: 'right',
 			render: (_, record) => {
-				const link = `/products/edit/${record.id}`;
+				const link = `/products/edit/${record.productId}`;
 				return (
 					<div>
 						<Link to={link}>Edit</Link>
-						<Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
+						<Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.productId)}>
 							<a>Delete</a>
 						</Popconfirm>
 					</div>
@@ -93,7 +78,7 @@ export default function ProductsTable(props: any) {
 	};
 
 	const expandedRowRender = (product: Product) => {
-		return <ProductDescription productId={product.id} product={product} />
+		return <ProductDescription productId={product.productId} product={product} />
 	}
 
 	return (
