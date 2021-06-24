@@ -1,38 +1,26 @@
-import { Table, Breadcrumb, Col, Row } from 'antd';
+import { Breadcrumb, Col, message, Popconfirm, Row, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
+import supplierService from '../services/supplier.service';
 import { Supplier } from '../supplier';
-//import api from '../../services/api'
 
 export default function ProductsTable(props: any) {
 	const [data, setData] = useState<Supplier[]>([]);
 	const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
 
 	useEffect(() => {
-
-		// api.get("users/tgmarinho")
-		// 	.then((response) => setData(response.data))
-		// 	.catch((err) => {
-		// 		console.error("ops! ocorreu um erro" + err);
-		// 	});
-
-		setData([{
-			key: 1,
-			id: 1,
-			name: 'Supplier 1',
-		},
-		{
-			key: 2,
-			id: 2,
-			name: 'Supplier 2',
-		},
-		{
-			key: 3,
-			id: 3,
-			name: 'Supplier 3',
-		}]);
-
+		fetchData();
 	}, []);
+
+	const fetchData = async () => {
+		const response = await supplierService.getSuppliers();
+		const suppliers = response.data;
+		suppliers.forEach((s: Supplier, i: number) => {
+			s.key = i;
+		});
+		setData(suppliers);
+	};
 
 	const onSelectChange = (selectedRowKeys: any[]) => {
 		setSelectedRowKeys(selectedRowKeys);
@@ -40,16 +28,33 @@ export default function ProductsTable(props: any) {
 
 	const columns: ColumnsType<Supplier> = [
 		{
-			key: 'id',
+			key: 'supplierId',
 			title: 'Id',
-			dataIndex: 'id',
+			dataIndex: 'supplierId',
 			defaultSortOrder: 'ascend',
-			sorter: (a, b) => a.id - b.id,
+			sorter: (a, b) => a.supplierId - b.supplierId,
 		},
 		{
 			key: 'name',
 			title: 'Nome',
 			dataIndex: 'name',
+		},
+		{
+			key: 'Actions',
+			title: 'Product',
+			width: '10%',
+			fixed: 'right',
+			render: (_, record) => {
+				const link = `/suppliers/edit/${record.supplierId}`;
+				return (
+					<div>
+						<Link to={link}>Edit</Link>
+						<Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.supplierId)}>
+							<a>Delete</a>
+						</Popconfirm>
+					</div>
+				);
+			},
 		},
 	];
 
@@ -63,13 +68,19 @@ export default function ProductsTable(props: any) {
 		]
 	};
 
+	const handleDelete = async (supplierId: number) => {
+		await supplierService.delete(supplierId);
+        message.success('Supplier deleted');
+		await fetchData();
+	}
+
 	// const expandedRowRender = (product: Product) => {
 	// 	return <ProductDescription productId={product.id} product={product} />
 	// }
 
 	return (
 		<Row>
-            <Breadcrumb style={{ margin: '16px 0' }}>
+			<Breadcrumb style={{ margin: '16px 0' }}>
 				<Breadcrumb.Item>Suppliers</Breadcrumb.Item>
 			</Breadcrumb>
 			<Col span={24}>

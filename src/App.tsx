@@ -12,6 +12,7 @@ import ProductTable from './product/components/product.table';
 import ProductNew from './product/container/product.new';
 import ProductEdit from './product/container/product.edit';
 import SupplierTable from './supplier/components/supplier.table';
+import SupplierEdit from './supplier/container/supplier.edit';
 const { Header, Content, Sider } = Layout;
 
 export default function App() {
@@ -47,6 +48,7 @@ export default function App() {
               <Route path="/products/new" exact component={ProductNew} />
               <Route path="/products/edit/:id" exact component={ProductEdit} />
               <Route path="/suppliers" exact component={SupplierTable} />
+              <Route path="/suppliers/edit/:id" exact component={SupplierEdit} />
             </Content>
           </Layout>
         </Layout>
