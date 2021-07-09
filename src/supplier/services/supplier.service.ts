@@ -13,6 +13,9 @@ export default {
     get(supplierId: number) {
         return api.get(`/Supplier/${supplierId}`);
     },
+    insert(supplier: Supplier) {
+        return api.post(`/Supplier`, supplier);
+    },
     update(supplierId: number, supplier: Supplier) {
         return api.put(`/Supplier/${supplierId}`, supplier);
     },
