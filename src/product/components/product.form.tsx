@@ -23,7 +23,7 @@ export default function ProductForm(props: any) {
 			<Row gutter={8}>
 				<Col span={24}>
 					<Form.Item label="Description">
-						<TextArea rows={2} value={product.description} onChange={(value) => setProduct({ ...product, name: value.target.value })} />
+						<TextArea rows={2} value={product.description} onChange={(value) => setProduct({ ...product, description: value.target.value })} />
 					</Form.Item>
 				</Col>
 			</Row>

@@ -13,6 +13,9 @@ export default {
     get(productId: number) {
         return api.get(`/Product/${productId}`);
     },
+    insert(product: Product) {
+        return api.post(`/Product/`, product);
+    },
     update(productId: number, product: Product) {
         return api.put(`/Product/${productId}`, product);
     },

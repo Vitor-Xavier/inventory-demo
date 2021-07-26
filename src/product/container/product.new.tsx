@@ -1,14 +1,15 @@
-import { Breadcrumb, Row, message } from 'antd';
+import { Breadcrumb, message, Row } from 'antd';
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import ProductForm from '../components/product.form';
 import { Product } from '../product';
-import { useHistory } from "react-router-dom";
+import productService from '../services/product.service';
 
 export default function ProductNew(props: any) {
     const history = useHistory();
 
-    const onFinish = (product: Product) => {
-        console.log('Submit product: ', product);
+    const onFinish = async (product: Product) => {
+        await productService.insert(product);
         message.success('Product added');
         history.push("/products");
     };
