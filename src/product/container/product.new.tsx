@@ -1,16 +1,17 @@
-import { Breadcrumb, message, Row } from 'antd';
+import { message } from 'antd';
 import React from 'react';
 import { useHistory } from "react-router-dom";
 import ProductForm from '../components/product.form';
 import { Product } from '../product';
 import productService from '../services/product.service';
+import Breadcrumb from '../../components/breadcrumb/breadcrumb.component';
 
 export default function ProductNew(props: any) {
     const history = useHistory();
 
     const onFinish = async (product: Product) => {
         await productService.insert(product);
-        message.success('Product added');
+        message.success('Produto cadastrado');
         history.push("/products");
     };
 
@@ -20,12 +21,7 @@ export default function ProductNew(props: any) {
 
     return (
         <>
-            <Row>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                    <Breadcrumb.Item>Products</Breadcrumb.Item>
-                    <Breadcrumb.Item>New</Breadcrumb.Item>
-                </Breadcrumb>
-            </Row>
+            <Breadcrumb items={['Produto', 'Inclusão']} />
             <ProductForm onFinish={onFinish} handleCancel={handleCancel} />
         </>
     )
