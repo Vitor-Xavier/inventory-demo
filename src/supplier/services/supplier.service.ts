@@ -1,7 +1,7 @@
 import api from '../../services/api';
 import { Supplier } from '../supplier';
 
-export default {
+const services = {
     getSuppliers(skip = 0, take = 10) {
         return api.get('/Supplier', {
             params: {
@@ -23,3 +23,5 @@ export default {
         return api.delete(`/Supplier/${supplierId}`);
     },
 }
+
+export default services;

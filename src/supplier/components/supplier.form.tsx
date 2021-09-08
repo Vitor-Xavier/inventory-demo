@@ -13,14 +13,14 @@ export default function ProductForm(props: any) {
 		<Form layout="vertical" onFinish={() => props.onFinish(supplier)}>
 			<Row gutter={8}>
 				<Col span={24}>
-					<Form.Item label="Name">
+					<Form.Item label="Nome">
 						<Input value={supplier.name} disabled={props.disableInputs} onChange={(value) => setSupplier({ ...supplier, name: value.target.value })} />
 					</Form.Item>
 				</Col>
 			</Row>
-			<Row gutter={8} justify="end">
-				<Button type="primary" htmlType="submit">Submit</Button>
-				<Button type="default" htmlType="button" onClick={props.handleCancel}>Cancel</Button>
+			<Row gutter={[16, 24]} justify="end">
+				<Button type="primary" htmlType="submit">Salvar</Button>
+				<Button type="default" htmlType="button" onClick={props.handleCancel}>Cancelar</Button>
 			</Row>
 		</Form>
 

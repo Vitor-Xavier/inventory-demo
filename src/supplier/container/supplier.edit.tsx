@@ -1,6 +1,7 @@
-import { Breadcrumb, message, Row } from 'antd';
+import { message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from "react-router-dom";
+import Breadcrumb from '../../components/breadcrumb/breadcrumb.component';
 import SupplierForm from '../components/supplier.form';
 import supplierService from '../services/supplier.service';
 import { Supplier } from '../supplier';
@@ -21,7 +22,7 @@ export default function SupplierEdit(props: any) {
 
 	const onFinish = async (supplier: Supplier) => {
         await supplierService.update(parseInt(id), supplier);
-        message.success('Supplier edited');
+        message.success('Fornecedor alterado');
         history.push("/suppliers");
 	};
 
@@ -31,12 +32,7 @@ export default function SupplierEdit(props: any) {
 
 	return (
         <>
-            <Row>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                    <Breadcrumb.Item>Suppliers</Breadcrumb.Item>
-                    <Breadcrumb.Item>Edit</Breadcrumb.Item>
-                </Breadcrumb>
-            </Row>
+            <Breadcrumb items={['Fornecedor', 'Edição']} />
             <SupplierForm supplier={supplier} onFinish={onFinish} handleCancel={handleCancel} />
         </>
     );
