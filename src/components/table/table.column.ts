@@ -9,6 +9,6 @@ export type Column<T> = {
 
 export function getDefaultActionsColumn<T>(): Column<T> {
     return {
-        dataIndex: 'actions', title: 'Ações', width: '10%', fixed: 'right', align: 'center'
+        dataIndex: 'actions', title: 'Ações', width: '15%', fixed: 'right', align: 'center'
     }
 }
