@@ -1,81 +1,68 @@
-import { Breadcrumb, Col, Popconfirm, Row, Space, Table, message } from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { DeleteFilled, EditFilled, PlusSquareFilled } from '@ant-design/icons';
+import { Button, Col, message, Popconfirm, Row, Space } from 'antd';
+import React, { useEffect } from 'react';
+import { useHistory } from "react-router-dom";
+import Breadcrumb from '../../components/breadcrumb/breadcrumb.component';
+import { Column, getDefaultActionsColumn } from '../../components/table/table.column';
+import TableComponent from '../../components/table/table.component';
 import { Product } from '../product';
 import productService from '../services/product.service';
 import ProductDescription from './product.description';
 
 export default function ProductsTable(props: any) {
-	const [data, setData] = useState<Product[]>([]);
-	const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
+	const history = useHistory();
 
 	useEffect(() => {
-		fetchData();
+		fetchData(1, 10);
 	}, []);
 
-	const fetchData = async () => {
-		const response = await productService.getProducts();
-		const products = response.data;
-		products.forEach((s: Product, i: number) => {
+	const fetchData = async (page: number, size: number) => {
+		const response = await productService.getProducts((page - 1) * size, size);
+		const { data, total } = response.data;
+		data.forEach((s: Product, i: number) => {
 			s.key = i;
 		});
-		setData(products);
-	};
 
-	const onSelectChange = (selectedRowKeys: any[]) => {
-		setSelectedRowKeys(selectedRowKeys);
+		return { data: data, total: total };
 	};
 
 	const handleDelete = async (supplierId: number) => {
 		await productService.delete(supplierId);
-        message.success('Product deleted');
-		await fetchData();
+		message.success('Product deleted');
+		await fetchData(1, 10);
 	}
 
-	const columns: ColumnsType<Product> = [
+	const columns: Column<Product>[] = [
 		{
-			key: 'id',
 			title: 'Id',
 			dataIndex: 'productId',
-			width: '10%',
-			defaultSortOrder: 'ascend',
-			sorter: (a, b) => a.productId - b.productId,
+			width: '15%',
 		},
 		{
-			key: 'name',
-			title: 'Product',
-			width: '80%',
+			title: 'Código',
+			width: '20%',
+			dataIndex: 'code',
+		},
+		{
+			title: 'Produto',
+			width: '50%',
 			dataIndex: 'name',
 		},
 		{
-			key: 'Actions',
-			title: 'Product',
-			width: '10%',
-			fixed: 'right',
+			...getDefaultActionsColumn<Product>(),
 			render: (_, record) => {
 				const link = `/products/edit/${record.productId}`;
 				return (
-					<div>
-						<Link to={link}>Edit</Link>
-						<Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.productId)}>
-							<a>Delete</a>
+					<Space size={8}>
+						<Button icon={<EditFilled />} onClick={() => history.push(link)} />
+						<Popconfirm title="Remover produto?" onConfirm={() => handleDelete(record.productId)}>
+							<Button icon={<DeleteFilled />} />
 						</Popconfirm>
-					</div>
+					</Space>
 				);
 			},
 		},
 	];
-
-	const rowSelection = {
-		selectedRowKeys,
-		onChange: onSelectChange,
-		selections: [
-			Table.SELECTION_ALL,
-			Table.SELECTION_INVERT,
-			Table.SELECTION_NONE,
-		]
-	};
 
 	const expandedRowRender = (product: Product) => {
 		return <ProductDescription productId={product.productId} product={product} />
@@ -83,21 +70,17 @@ export default function ProductsTable(props: any) {
 
 	return (
 		<>
-			<Row>
-				<Breadcrumb style={{ margin: '16px 0' }}>
-					<Breadcrumb.Item>Products</Breadcrumb.Item>
-				</Breadcrumb>
-			</Row>
+			<Breadcrumb items={['Produto']} />
 			<Row justify="end">
-				<Col span={4}>
-					<Space align="end">
-						<Link to="/products/new">New</Link>
+				<Col span={4} style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 0px' }}>
+					<Space size={8} align="end">
+						<Button icon={<PlusSquareFilled />} onClick={() => history.push("/products/new")} />
 					</Space>
 				</Col>
 			</Row>
 			<Row>
 				<Col span={24}>
-					<Table rowSelection={rowSelection} expandable={{ expandedRowRender }} columns={columns} dataSource={data} />
+					<TableComponent rowKey="productId" fetch={fetchData} expandable={{ expandedRowRender }} columns={columns} />
 				</Col>
 			</Row>
 		</>
