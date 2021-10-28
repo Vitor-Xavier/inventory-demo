@@ -1,7 +1,8 @@
 import api from '../../services/api'
 import { Product } from '../product';
 
-export default {
+
+const services = {
     getProducts(skip = 0, take = 10) {
         return api.get('/Product', {
             params: {
@@ -23,3 +24,5 @@ export default {
         return api.delete(`/Product/${productId}`);
     },
 }
+
+export default services;
