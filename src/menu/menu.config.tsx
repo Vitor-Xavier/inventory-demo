@@ -1,5 +1,5 @@
 import {
-  CodeSandboxOutlined, ShopOutlined
+  CodeSandboxOutlined, ShopOutlined,TeamOutlined
 } from '@ant-design/icons';
 import { MenuItem } from './menuItem';
 
@@ -15,6 +15,12 @@ const menuItems: MenuItem[] = [
       name: "Fornecedores",
       route: "/suppliers",
       icon: <ShopOutlined />
+    },
+    {
+      key: "users",
+      name: "Usuários",
+      route: "/users",
+      icon: <TeamOutlined />
     },
   ];
 

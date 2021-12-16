@@ -11,6 +11,7 @@ import menuItems from './menu/menu.config';
 import { MenuItem } from './menu/menuItem';
 import productRoutes from './product/product.routes';
 import supplierRoutes from './supplier/supplier.routes';
+import userRoutes from './user/user.routes';
 const { Header, Content, Sider } = Layout;
 
 const resetToken = () => {
@@ -79,6 +80,7 @@ export default function App() {
               <Route path="/" exact component={Home} />
               {productRoutes.map(s => s)}
               {supplierRoutes.map(s => s)}
+              {userRoutes.map(s => s)}
             </Switch>
           </Content>
         </Layout>
