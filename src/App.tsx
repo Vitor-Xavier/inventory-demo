@@ -1,4 +1,4 @@
-import { DashboardOutlined, LogoutOutlined, NotificationOutlined } from '@ant-design/icons';
+import { NotificationOutlined } from '@ant-design/icons';
 import { HubConnection, HubConnectionBuilder } from "@microsoft/signalr";
 import { Badge, Col, Layout, Menu, notification, Row, Space } from 'antd';
 import 'antd/dist/antd.css';
@@ -9,12 +9,12 @@ import Home from './home/components/home';
 import './index.css';
 import LoginForm from './login/components/login.form';
 import menuItems from './menu/menu.config';
-import { MenuItem } from './menu/menuItem';
 import Notifications from './notification/components/notification.table';
 import notificationService from './notification/services/notification.service';
 import productRoutes from './product/product.routes';
 import supplierRoutes from './supplier/supplier.routes';
 import userRoutes from './user/user.routes';
+import Sidemenu from './components/sidemenu/sidemenu';
 const { Header, Content, Sider } = Layout;
 
 const resetToken = () => {
@@ -47,7 +47,6 @@ export default function App() {
   const [notificationCount, setNotificationCount] = useState<number>(0);
   const [notificationStatus, setNotificationStatus] = useState<'default' | 'processing' | undefined>(undefined);
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>(['home']);
 
   const onCollapse = (collapsed: boolean) => {
     setCollapsed(collapsed);
@@ -63,22 +62,6 @@ export default function App() {
     const response = await notificationService.getNotificationCount();
     setNotificationCount(response.data);
     setNotificationStatus(undefined);
-  }
-
-  const handleRedirect = (route: string) => {
-    if (route.startsWith('/products')) {
-      setSelectedKeys(['products']);
-      return;
-    }
-    if (route.startsWith('/suppliers')) {
-      setSelectedKeys(['suppliers']);
-      return;
-    }
-    if (route.startsWith('/users')) {
-      setSelectedKeys(['users']);
-      return;
-    }
-    setSelectedKeys(['home']);
   }
 
   useEffect(() => {
@@ -110,11 +93,11 @@ export default function App() {
       }
     }
 
-    connection.on("UpdateCount", (count) => {
+    connection.on("UpdateCount", (count: number) => {
       setNotificationCount(count);
     });
 
-    connection.on("ReceiveMessage", (id, user, title, message, type, route) => {
+    connection.on("ReceiveMessage", (id: number, user: string, title: string, message: string, type: number, route: string) => {
       getNotificationCount();
       const ntype = notificationType(type);
 
@@ -142,7 +125,7 @@ export default function App() {
     start();
   }, [connection]);
 
-  if (!token) return <LoginForm setToken={setToken} onRedirect={handleRedirect} />
+  if (!token) return <LoginForm setToken={setToken} />
 
   return (
     <Layout>
@@ -162,21 +145,7 @@ export default function App() {
       </Header>
       <Layout>
         <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-          <Menu theme="dark" defaultSelectedKeys={['home']} selectedKeys={selectedKeys} mode="inline" onSelect={({ selectedKeys }) => setSelectedKeys(selectedKeys?.map(k => k.toString()) || [''])}>
-            <Menu.Item key="home" icon={<DashboardOutlined />} style={{ marginTop: '0px' }}>
-              <Link to="/">Início</Link>
-            </Menu.Item>
-            {menuItems.map((item: MenuItem) => {
-              return (
-                <Menu.Item key={item.key} icon={item.icon}>
-                  <Link to={item.route}>{item.name}</Link>
-                </Menu.Item>
-              )
-            })}
-            <Menu.Item key="logout" icon={<LogoutOutlined />} onClick={handleLogout}>
-              Sair
-            </Menu.Item>
-          </Menu>
+          <Sidemenu items={menuItems} onLogout={handleLogout}/>
         </Sider>
         <Layout className="site-layout">
           <Content style={{ margin: '0 16px' }}>

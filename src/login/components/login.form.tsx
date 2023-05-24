@@ -27,7 +27,6 @@ export default function LoginForm(props: any) {
             props.setToken(result.data.token);
 
             const route = redirectTo === '/login' ? '/' : redirectTo ?? '/';
-            props.onRedirect(route);
             history.push(route);
         } catch (e) {
             message.error('Erro ao logar usuário');

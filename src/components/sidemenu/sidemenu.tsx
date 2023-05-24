@@ -1,28 +1,55 @@
 import { Menu, Col, Row } from 'antd';
-import React, { useState } from 'react';
+import { HomeOutlined, LogoutOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation } from "react-router-dom";
+import { MenuItem } from '../../menu/menuItem';
 
 export default function Sidemenu(props: any) {
-	const [selectedKey, setSelectedKey] = useState('dashboard');
+    const home = { key: "home", name: "Início", route: "/", icon: <HomeOutlined /> };
+	const location = useLocation();
+	const [items, setItems] = useState<MenuItem[]>([home]);
+	const [selectedKeys, setSelectedKeys] = useState<string[]>(['home']);
 
-	console.log(props.items);
+	useEffect(() => {
+		handleRedirect(location.pathname);
+	}, [location]);
+
+	useEffect(() => {
+		setItems([home, ...props.items]);
+	}, [props.items]);
+
+	const handleRedirect = (route: string) => {
+		if (route.startsWith('/products')) {
+			setSelectedKeys(['products']);
+			return;
+		}
+		if (route.startsWith('/suppliers')) {
+			setSelectedKeys(['suppliers']);
+			return;
+		}
+		if (route.startsWith('/users')) {
+			setSelectedKeys(['users']);
+			return;
+		}
+		if (route.startsWith('/notifications')) {
+			setSelectedKeys([]);
+			return;
+		}
+		setSelectedKeys(['home']);
+	}
+
 	return (
-		<Row>
-			<Col span={6}>
-				<Menu
-					onClick={(e) => setSelectedKey(e.key?.toString())}
-					style={{ width: 256 }}
-					mode="inline"
-				>
-					{props.items.map((item: any) => (
-						<Menu.Item key={item.key}>{item.title}</Menu.Item>
-					))}
-				</Menu>
-			</Col>
-			<Col span={18}>
-				<div className="container">
-					{props.items.find((item: any) => item.key === selectedKey)?.content}
-				</div>
-			</Col>
-		</Row>
+		<Menu theme="dark" defaultSelectedKeys={['home']} selectedKeys={selectedKeys} mode="inline" onSelect={({ selectedKeys }) => setSelectedKeys(selectedKeys?.map(k => k.toString()) || [''])}>
+			{items.map((item: MenuItem) => {
+				return (
+					<Menu.Item key={item.key} icon={item.icon}>
+						<Link to={item.route}>{item.name}</Link>
+					</Menu.Item>
+				)
+			})}
+			<Menu.Item key="logout" icon={<LogoutOutlined />} onClick={props.onLogout}>
+				Sair
+			</Menu.Item>
+		</Menu>
 	);
 }
